@@ -1,0 +1,675 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ադմին Պանել - Ծաղիկ{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <div class="flex items-center gap-3">
+          <div class="bg-pink-500 rounded-full p-2">
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.5 1.5C5.8 1.5 2 5.3 2 10c0 2.5 1 4.8 2.7 6.4.5.5 1 1 1.6 1.3l1-2c-.4-.2-.8-.6-1.2-1C4.5 14.2 3.5 12.2 3.5 10c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5c0 2.2-1 4.2-2.6 5.5-.4.4-.8.8-1.2 1l1 2c.6-.3 1.1-.8 1.6-1.3 1.7-1.6 2.7-3.9 2.7-6.4 0-4.7-3.8-8.5-8.5-8.5z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-pink-600" style="font-family: Georgia, serif;">Ծաղիկ</h1>
+            <p class="text-xs text-gray-500">Ադմին պանել</p>
+          </div>
+        </div>
+
+        <a href="{% url 'admin_logout' %}" class="flex items-center gap-2 text-gray-500 hover:text-red-600 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          <span>Դուրս գալ</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs Navigation -->
+  <div class="bg-white border-b border-gray-200 sticky top-20 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex gap-8 overflow-x-auto">
+        <button class="tab-link active py-4 px-2 font-medium border-b-2 transition-all whitespace-nowrap border-pink-500 text-pink-600" data-tab="products">
+          Ծաղիկներ <span class="ml-2 text-gray-500">({{ flowers|length }})</span>
+        </button>
+        <button class="tab-link py-4 px-2 font-medium border-b-2 transition-all whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700" data-tab="orders">
+          Պատվերներ <span class="ml-2 text-gray-500">({{ orders|length }})</span>
+        </button>
+        <button class="tab-link py-4 px-2 font-medium border-b-2 transition-all whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700" data-tab="main-page">
+          <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          </svg>
+          Main Page
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- PRODUCTS TAB -->
+    <div id="products-tab" class="tab-content active">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h2 class="text-3xl font-bold mb-2" style="font-family: Georgia, serif;">Ծաղիկների կառավարում</h2>
+          <p class="text-gray-500">Ընդամենը {{ flowers|length }} ծաղիկ</p>
+        </div>
+        <button class="toggle-add-product bg-pink-500 text-white hover:bg-pink-600 rounded-full px-6 py-3 font-medium transition-all shadow-lg hover:shadow-pink-200 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Ավելացնել ծաղիկ</span>
+        </button>
+      </div>
+
+      <!-- Add/Edit Product Form -->
+      <div id="add-product-form" class="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-8 hidden">
+        <h3 class="font-bold text-2xl mb-6" style="font-family: Georgia, serif;" id="form-title">Ավելացնել նոր ծաղիկ</h3>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6" id="flower-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_flower" id="action-input">
+          <input type="hidden" name="flower_id" id="flower-id-input">
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Անվանում *</label>
+              <input type="text" name="name" id="flower-name" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+            </div>
+
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Գին (֏) *</label>
+                <input type="number" name="price_amd" id="flower-price" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Sale Գին (֏)</label>
+                <input type="number" name="sale_price_amd" id="flower-sale-price" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Կատեգորիա *</label>
+            <select name="category" id="flower-category" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+              <option value="">Ընտրեք կատեգորիա</option>
+              <option value="Վարդեր">Վարդեր</option>
+              <option value="Լիլիաներ">Լիլիաներ</option>
+              <option value="Տյուլիպաններ">Տյուլիպաններ</option>
+              <option value="Արևածաղիկներ">Արևածաղիկներ</option>
+              <option value="Խոլորձներ">Խոլորձներ</option>
+              <option value="Փունջեր">Փունջեր</option>
+              <option value="Խառը">Խառը</option>
+              <option value="Պրեմիում">Պրեմիում</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Գույներ</label>
+            <select id="color-select" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="">Ընտրեք գույնը</option>
+              <option value="Կարմիր">Կարմիր</option>
+              <option value="Վարդագույն">Վարդագույն</option>
+              <option value="Սպիտակ">Սպիտակ</option>
+              <option value="Դեղին">Դեղին</option>
+              <option value="Մանուշակագույն">Մանուշակագույն</option>
+              <option value="Բազմագույն">Բազմագույն</option>
+            </select>
+            <div id="selected-colors" class="mt-2 flex flex-wrap gap-2"></div>
+            <input type="hidden" name="colors" id="flower-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Նկարագրություն *</label>
+            <textarea name="description" id="flower-description" rows="4" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Նկարներ (առավելագույնը 5)</label>
+            <input type="file" name="images" id="flower-images" accept="image/*" multiple class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+            <small class="text-gray-500">Ընտրեք նկարներ - առաջին նկարը կդառնա հիմնական</small>
+            <div id="image-preview" class="mt-4 grid grid-cols-5 gap-4"></div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" name="is_free_delivery" id="is-free-delivery" class="w-5 h-5 text-pink-500 rounded">
+              <label for="is-free-delivery" class="text-sm font-medium text-gray-700 cursor-pointer">
+                Անվճար առաքում
+              </label>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" name="to_be_on_main_page" id="to-be-on-main-page" class="w-5 h-5 text-pink-500 rounded">
+              <label for="to-be-on-main-page" class="text-sm font-medium text-gray-700 cursor-pointer">
+                Գլխավոր էջում ցուցադրել
+              </label>
+            </div>
+          </div>
+
+          <div class="flex gap-4 pt-4 border-t">
+            <button type="submit" id="submit-btn" class="flex-1 bg-pink-500 text-white hover:bg-pink-600 rounded-full px-8 py-3 font-medium transition-all shadow-lg">
+              Պահպանել
+            </button>
+            <button type="button" class="toggle-add-product px-8 py-3 border border-gray-300 hover:bg-gray-50 rounded-full font-medium transition-all">
+              Չեղարկել
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="flowers-grid">
+        {% for flower in flowers %}
+          <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm flower-card" data-flower-id="{{ flower.id }}" data-flower-name="{{ flower.name }}" data-flower-price="{{ flower.price_amd }}" data-flower-sale-price="{{ flower.sale_price_amd|default:'' }}" data-flower-category="{{ flower.category }}" data-flower-description="{{ flower.description }}" data-flower-colors="{{ flower.colors|join:',' }}" data-flower-delivery="{{ flower.is_free_delivery|lower }}" data-flower-main-page="{{ flower.to_be_on_main_page|lower }}">
+            <div class="aspect-square bg-gray-200 relative">
+              {% with flower.images.all|first as main_image %}
+                {% if main_image %}
+                  <img src="{{ main_image.url }}" alt="{{ flower.name }}" class="w-full h-full object-cover">
+                {% else %}
+                  <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&q=80" alt="{{ flower.name }}" class="w-full h-full object-cover">
+                {% endif %}
+              {% endwith %}
+              {% if flower.is_free_delivery %}
+                <div class="absolute top-3 left-3 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
+                  Անվճար առաքում
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="p-5">
+              <h3 class="font-bold text-xl mb-2">{{ flower.name }}</h3>
+              <p class="text-sm text-gray-500 mb-3 line-clamp-2">{{ flower.description }}</p>
+
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <span class="text-2xl font-bold text-pink-600 {% if flower.sale_price_amd %}line-through text-lg{% endif %}">
+                    {{ flower.price_amd|floatformat:0 }} ֏
+                  </span>
+                  {% if flower.sale_price_amd %}
+                    <span class="ml-2 text-2xl font-bold text-pink-600">
+                      {{ flower.sale_price_amd|floatformat:0 }} ֏
+                    </span>
+                  {% endif %}
+                </div>
+                <span class="text-xs text-gray-500">{{ flower.category }}</span>
+              </div>
+
+              {% if flower.colors %}
+                <div class="mb-4 text-xs text-gray-500">
+                  Գույներ: {{ flower.colors|join:", " }}
+                </div>
+              {% endif %}
+
+              <div class="flex gap-2">
+                <button class="edit-flower flex-1 flex items-center justify-center gap-2 py-2 border border-gray-300 hover:bg-gray-50 rounded-lg transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                  <span>Խմբագրել</span>
+                </button>
+                <button class="delete-flower flex-1 flex items-center justify-center gap-2 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                  <span>Հեռացնել</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-span-full text-center py-16">
+            <p class="text-lg text-gray-500">Ծաղիկներ չկան։ Ավելացրեք ձեր առաջին ծաղիկը։</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="orders-tab" class="tab-content hidden">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold mb-6" style="font-family: Georgia, serif;">Պատվերների կառավարում</h2>
+
+        <div class="flex gap-2 flex-wrap">
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-pink-500 text-white transition-all" data-status="all">
+            Բոլորը
+          </button>
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-status="pending">
+            Սպասվում
+          </button>
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-status="confirmed">
+            Հաստատված
+          </button>
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-status="processing">
+            Մշակվում է
+          </button>
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-status="shipped">
+            Ուղարկված
+          </button>
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-status="delivered">
+            Հասցեագրված
+          </button>
+          <button class="order-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all" data-status="cancelled">
+            Չեղարկված
+          </button>
+        </div>
+      </div>
+
+      <div id="orders-list" class="space-y-4">
+        {% for order in orders %}
+          <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm order-item" data-order-status="{{ order.status }}" data-order-id="{{ order.id }}">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-xl" style="font-family: Georgia, serif;">
+                  Պատվեր #{{ order.id }}
+                </h3>
+                <div class="flex gap-4 mt-2 text-sm text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ order.created_at|date:"d.m.Y H:i" }}
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948-.684l1.498-4.493a1 1 0 011.502-.684l1.498 4.493a1 1 0 00.948.684H19a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"/>
+                    </svg>
+                    {{ order.customer_phone }}
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold text-pink-600 mb-2">
+                  {{ order.total_amount_amd|floatformat:0 }} ֏
+                </div>
+                <div class="inline-block px-3 py-1 rounded-full text-xs font-medium border status-badge order-status-badge {% if order.status == 'pending' %}bg-yellow-50 text-yellow-700 border-yellow-200{% elif order.status == 'confirmed' %}bg-blue-50 text-blue-700 border-blue-200{% elif order.status == 'processing' %}bg-purple-50 text-purple-700 border-purple-200{% elif order.status == 'shipped' %}bg-indigo-50 text-indigo-700 border-indigo-200{% elif order.status == 'delivered' %}bg-green-50 text-green-700 border-green-200{% elif order.status == 'cancelled' %}bg-red-50 text-red-700 border-red-200{% endif %}">
+                  {% if order.status == 'pending' %}Սպասվում{% elif order.status == 'confirmed' %}Հաստատված{% elif order.status == 'processing' %}Մշակվում է{% elif order.status == 'shipped' %}Ուղարկված{% elif order.status == 'delivered' %}Հասցեագրված{% elif order.status == 'cancelled' %}Չեղարկված{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-4">
+              <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Հաճախորդ</p>
+                <p class="font-semibold">{{ order.customer_name }}</p>
+                {% if order.customer_email %}
+                  <p class="text-sm text-gray-500">{{ order.customer_email }}</p>
+                {% endif %}
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Հասցե</p>
+                <div class="flex items-start gap-1">
+                  <svg class="w-4 h-4 mt-0.5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  </svg>
+                  <div>
+                    <p class="font-semibold">{{ order.delivery_city }}</p>
+                    <p class="text-sm text-gray-500">{{ order.delivery_address }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <p class="text-sm font-medium text-gray-500 mb-2">Վճարման եղանակ</p>
+              <span class="text-sm">
+                {% if order.payment_method == 'cash' %}Կանխիկ{% else %}Քարտ{% endif %}
+              </span>
+            </div>
+
+            {% if order.items.all %}
+              <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                <p class="text-sm font-medium text-gray-500 mb-2">Ապրանքներ</p>
+                <div class="space-y-1">
+                  {% for item in order.items.all %}
+                    <div class="flex justify-between text-sm">
+                      <span>{{ item.flower_name }} × {{ item.quantity }}</span>
+                      <span>{{ item.price_amd_at_purchase|floatformat:0 }} ֏</span>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if order.bacik_erktox %}
+              <div class="mb-4">
+                <p class="text-sm font-medium text-gray-500 mb-2">Բացիկ-Երկտող</p>
+                <p class="text-sm">{{ order.bacik_erktox }}</p>
+              </div>
+            {% endif %}
+
+            {% if order.status != 'delivered' and order.status != 'cancelled' %}
+              <div class="pt-4 border-t">
+                <form method="POST" class="update-order-status">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="update_order_status">
+                  <input type="hidden" name="order_id" value="{{ order.id }}">
+                  <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" onchange="this.form.submit()">
+                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Սպասվում</option>
+                    <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>Հաստատված</option>
+                    <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Մշակվում է</option>
+                    <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Ուղարկված</option>
+                    <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Հասցեագրված</option>
+                    <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Չեղարկված</option>
+                  </select>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+        {% empty %}
+          <div class="text-center py-16">
+            <p class="text-lg text-gray-500">Պատվերներ չկան</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- MAIN PAGE TAB -->
+    <div id="main-page-tab" class="tab-content hidden">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h2 class="text-3xl font-bold mb-2" style="font-family: Georgia, serif;">Main Page բովանդակության կառավարում</h2>
+          <p class="text-gray-500">Խմբագրեք ձեր գլխավոր էջի բովանդակությունը</p>
+        </div>
+        <button class="toggle-edit-main-page bg-pink-500 text-white hover:bg-pink-600 rounded-full px-6 py-3 font-medium transition-all shadow-lg hover:shadow-pink-200 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          <span class="toggle-text">Խմբագրել</span>
+        </button>
+      </div>
+
+      <!-- Edit Main Page Form -->
+      <div id="edit-main-page-form" class="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-8 hidden">
+        <h3 class="font-bold text-2xl mb-6" style="font-family: Georgia, serif;">Խմբագրել Main Page բովանդակությունը</h3>
+
+        <form method="POST" enctype="multipart/form-data" id="main-page-form" class="space-y-6">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_main_page">
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Վերնագիր *</label>
+              <input type="text" name="title" id="main-title" value="{{ main_content.title }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Ենթավերնագիր</label>
+              <textarea name="subtitle" id="main-subtitle" rows="2" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">{{ main_content.subtitle }}</textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Նկարագրություն</label>
+              <textarea name="description" id="main-description" rows="4" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">{{ main_content.description }}</textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Հատուկ առաջարկ</label>
+              <textarea name="special_offer" id="main-special-offer" rows="3" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">{{ main_content.special_offer }}</textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Լրացուցիչ տեքստ</label>
+              <textarea name="extra_text" id="main-extra-text" rows="2" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">{{ main_content.extra_text }}</textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Main նկար</label>
+              <input type="file" name="main_image" id="main-image" accept="image/*" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              {% if main_content.main_image %}
+                <div class="mt-4">
+                  <img src="{{ main_content.main_image.url }}" alt="Main" class="w-48 h-48 object-cover rounded-lg">
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="flex gap-4 border-t pt-6">
+            <button type="submit" class="flex-1 bg-pink-500 text-white hover:bg-pink-600 rounded-full px-8 py-3 font-medium transition-all shadow-lg">
+              Պահպանել փոփոխությունները
+            </button>
+            <button type="button" class="toggle-edit-main-page px-8 py-3 border border-gray-300 hover:bg-gray-50 rounded-full font-medium transition-all">
+              Չեղարկել
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="space-y-8">
+        {% if main_content.title %}
+          <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm p-8">
+            <h3 class="font-bold text-3xl mb-4" style="font-family: Georgia, serif;">{{ main_content.title }}</h3>
+            {% if main_content.subtitle %}
+              <p class="text-lg text-gray-600 mb-4">{{ main_content.subtitle }}</p>
+            {% endif %}
+            {% if main_content.description %}
+              <p class="text-gray-600 whitespace-pre-line mb-4">{{ main_content.description }}</p>
+            {% endif %}
+            {% if main_content.special_offer %}
+              <p class="text-lg font-semibold text-pink-600">{{ main_content.special_offer }}</p>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="bg-white rounded-2xl p-8 border border-gray-200 text-center">
+            <p class="text-gray-500">Main page բովանդակությունը դեռ սահմանված չէ</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tab-link {
+    border-color: transparent;
+    cursor: pointer;
+  }
+  .tab-link.active {
+    border-color: #ec4899;
+    color: #ec4899;
+  }
+</style>
+
+<script>
+// ==================== TAB SWITCHING ====================
+document.querySelectorAll('.tab-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const tab = link.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+    document.getElementById(tab + '-tab').classList.add('active');
+    link.classList.add('active');
+  });
+});
+
+// ==================== FLOWERS MANAGEMENT ====================
+
+// Toggle Add Product Form
+document.querySelectorAll('.toggle-add-product').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const form = document.getElementById('add-product-form');
+    form.classList.toggle('hidden');
+    if (!form.classList.contains('hidden')) {
+      resetFlowerForm();
+    }
+  });
+});
+
+// Reset Flower Form
+function resetFlowerForm() {
+  const form = document.getElementById('flower-form');
+  form.reset();
+  document.getElementById('action-input').value = 'add_flower';
+  document.getElementById('flower-id-input').value = '';
+  document.getElementById('form-title').textContent = 'Ավելացնել նոր ծաղիկ';
+  document.getElementById('submit-btn').textContent = 'Պահպանել';
+  document.getElementById('flower-colors').value = '';
+  document.getElementById('selected-colors').innerHTML = '';
+  document.getElementById('image-preview').innerHTML = '';
+}
+
+// Color Selection
+document.getElementById('color-select').addEventListener('change', (e) => {
+  const color = e.target.value;
+  if (color) {
+    const colors = (document.getElementById('flower-colors').value || '').split(',').filter(c => c.trim());
+    if (!colors.includes(color)) {
+      colors.push(color);
+      document.getElementById('flower-colors').value = colors.join(',');
+      updateColorTags();
+    }
+    e.target.value = '';
+  }
+});
+
+function updateColorTags() {
+  const colors = (document.getElementById('flower-colors').value || '').split(',').filter(c => c.trim());
+  const container = document.getElementById('selected-colors');
+  container.innerHTML = colors.map(color => `
+    <span class="flex items-center bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-pink-200" onclick="removeColor('${color}')">
+      ${color} <span class="ml-1 font-bold">×</span>
+    </span>
+  `).join('');
+}
+
+function removeColor(color) {
+  const colors = (document.getElementById('flower-colors').value || '').split(',').filter(c => c.trim());
+  const idx = colors.indexOf(color);
+  if (idx > -1) {
+    colors.splice(idx, 1);
+    document.getElementById('flower-colors').value = colors.join(',');
+    updateColorTags();
+  }
+}
+
+// Edit Flower
+document.querySelectorAll('.edit-flower').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const flowerCard = e.target.closest('.flower-card');
+    const flowerId = flowerCard.dataset.flowerId;
+    const flowerName = flowerCard.dataset.flowerName;
+    const flowerPrice = flowerCard.dataset.flowerPrice;
+    const flowerSalePrice = flowerCard.dataset.flowerSalePrice;
+    const flowerCategory = flowerCard.dataset.flowerCategory;
+    const flowerDescription = flowerCard.dataset.flowerDescription;
+    const flowerColors = flowerCard.dataset.flowerColors;
+    const flowerDelivery = flowerCard.dataset.flowerDelivery === 'true';
+    const flowerMainPage = flowerCard.dataset.flowerMainPage === 'true';
+
+    // Populate form
+    document.getElementById('flower-id-input').value = flowerId;
+    document.getElementById('action-input').value = 'edit_flower';
+    document.getElementById('flower-name').value = flowerName;
+    document.getElementById('flower-price').value = flowerPrice;
+    document.getElementById('flower-sale-price').value = flowerSalePrice || '';
+    document.getElementById('flower-category').value = flowerCategory;
+    document.getElementById('flower-description').value = flowerDescription;
+    document.getElementById('flower-colors').value = flowerColors || '';
+    document.getElementById('is-free-delivery').checked = flowerDelivery;
+    document.getElementById('to-be-on-main-page').checked = flowerMainPage;
+    document.getElementById('form-title').textContent = `Խմբագրել "${flowerName}"`;
+    document.getElementById('submit-btn').textContent = 'Թարմացնել';
+    
+    // Update color tags
+    updateColorTags();
+
+    // Show form
+    document.getElementById('add-product-form').classList.remove('hidden');
+    document.getElementById('flower-name').focus();
+  });
+});
+
+// Delete Flower
+document.querySelectorAll('.delete-flower').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const flowerCard = e.target.closest('.flower-card');
+    const flowerName = flowerCard.dataset.flowerName;
+    const flowerId = flowerCard.dataset.flowerId;
+
+    if (confirm(`Վստա՞հ եք, որ ցանկանում եք հեռացնել "${flowerName}"?`)) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.innerHTML = `
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete_flower">
+        <input type="hidden" name="flower_id" value="${flowerId}">
+      `;
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+});
+
+// ==================== ORDERS MANAGEMENT ====================
+
+// Order Status Filtering
+document.querySelectorAll('.order-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const status = btn.dataset.status;
+    
+    // Update button styles
+    document.querySelectorAll('.order-filter-btn').forEach(b => {
+      b.classList.remove('bg-pink-500', 'text-white');
+      b.classList.add('bg-gray-200', 'text-gray-700');
+    });
+    btn.classList.remove('bg-gray-200', 'text-gray-700');
+    btn.classList.add('bg-pink-500', 'text-white');
+
+    // Filter orders
+    if (status === 'all') {
+      document.querySelectorAll('.order-item').forEach(item => item.style.display = 'block');
+    } else {
+      document.querySelectorAll('.order-item').forEach(item => {
+        item.style.display = item.dataset.orderStatus === status ? 'block' : 'none';
+      });
+    }
+  });
+});
+
+// ==================== MAIN PAGE MANAGEMENT ====================
+
+// Toggle Edit Main Page
+document.querySelectorAll('.toggle-edit-main-page').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const form = document.getElementById('edit-main-page-form');
+    form.classList.toggle('hidden');
+    const toggleText = btn.querySelector('.toggle-text');
+    if (toggleText) {
+      toggleText.textContent = form.classList.contains('hidden') ? 'Խմբագրել' : 'Չեղարկել';
+    }
+  });
+});
+
+// ==================== FORM SUBMISSIONS ====================
+
+// Flower Form Submit
+document.getElementById('flower-form').addEventListener('submit', (e) => {
+  // Form will submit normally
+});
+
+// Main Page Form Submit
+document.getElementById('main-page-form').addEventListener('submit', (e) => {
+  // Form will submit normally
+});
+
+// Order Status Form Auto-submit (handled by onchange in HTML)
+</script>
+{% endblock %}
