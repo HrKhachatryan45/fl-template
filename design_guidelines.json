@@ -1,0 +1,171 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Dzaghik (Flower)",
+      "persona": "E1: The Anti-AI Designer",
+      "archetype": "Organic & Earthy + Jewel & Luxury Fusion",
+      "emotion": "Romance, Heritage, Freshness, Opulence",
+      "language": "Armenian (hy-AM)"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Noto Serif Armenian, Playfair Display, serif",
+        "body": "Noto Sans Armenian, Manrope, sans-serif",
+        "accent": "Caveat, cursive"
+      },
+      "scale": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tight leading-tight",
+        "h2": "text-4xl md:text-5xl font-semibold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-medium",
+        "body": "text-base md:text-lg leading-relaxed",
+        "caption": "text-sm tracking-wide uppercase text-muted-foreground"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#8B2635",
+          "foreground": "#FFFFFF",
+          "description": "Deep Pomegranate Red - The soul of the brand"
+        },
+        "secondary": {
+          "DEFAULT": "#E6B89C",
+          "foreground": "#2A2A2A",
+          "description": "Soft Apricot/Tuff Stone - Warmth and heritage"
+        },
+        "background": {
+          "DEFAULT": "#FFFCF8",
+          "alt": "#FDF6F6",
+          "description": "Warm Alabaster/Pale Rose - Not pure white"
+        },
+        "accent": {
+          "DEFAULT": "#D8BFD8",
+          "foreground": "#2A2A2A",
+          "description": "Thistle/Lavender - The floral touch"
+        },
+        "muted": {
+          "DEFAULT": "#F3F4F6",
+          "foreground": "#6B7280"
+        },
+        "border": "#E5E7EB"
+      },
+      "gradients": {
+        "hero": "bg-gradient-to-b from-[#FFFCF8] via-[#FFF0F5] to-[#FFFCF8]",
+        "card": "bg-gradient-to-br from-white/80 to-white/40"
+      }
+    },
+    "spacing": {
+      "container": "container mx-auto px-4 md:px-8 lg:px-12",
+      "section_padding": "py-16 md:py-24 lg:py-32",
+      "element_gap": "gap-6 md:gap-8 lg:gap-12"
+    },
+    "visual_enhancers": {
+      "radius": "rounded-xl",
+      "shadows": {
+        "card": "shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]",
+        "floating": "shadow-[0_20px_50px_rgb(0,0,0,0.1)]"
+      },
+      "glassmorphism": "backdrop-blur-xl bg-white/70 border border-white/20 shadow-sm",
+      "textures": "Use subtle grain overlay on hero sections to mimic paper/organic feel"
+    },
+    "animation": {
+      "transition": "transition-all duration-500 ease-out",
+      "hover_lift": "hover:-translate-y-1 hover:shadow-lg",
+      "micro_interactions": "active:scale-95"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-3 font-medium transition-all shadow-lg hover:shadow-primary/20",
+      "secondary": "bg-white text-primary border border-primary/20 hover:bg-primary/5 rounded-full px-8 py-3 font-medium transition-all",
+      "ghost": "text-primary hover:bg-primary/5 rounded-full px-4 py-2"
+    },
+    "cards": {
+      "product": "group relative bg-white rounded-2xl overflow-hidden border border-border/50 transition-all duration-300 hover:border-primary/20",
+      "feature": "bg-secondary/10 p-8 rounded-2xl border border-secondary/20"
+    },
+    "inputs": {
+      "default": "bg-white/50 border-border focus:border-primary/50 focus:ring-primary/20 rounded-lg"
+    }
+  },
+  "layout_strategies": {
+    "homepage": {
+      "hero": "Asymmetrical 'Tetris' grid. Large hero image (60%) + Typography block (40%). Overlapping elements.",
+      "featured": "Horizontal scroll with 'snap-x' or a masonry grid for 'Artistic' feel.",
+      "marquee": "Slow moving 'Editorial Ribbon' with Armenian calligraphy or floral icons."
+    },
+    "product_list": {
+      "grid": "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16",
+      "filters": "Sticky sidebar or minimal top bar with 'Pill' shaped toggles."
+    },
+    "product_detail": {
+      "layout": "Split screen. Left: Sticky Image Gallery (Vertical stack). Right: Scrollable details.",
+      "typography": "Huge product title (Serif). Price in Accent color."
+    },
+    "admin": {
+      "style": "Clean, high-density but airy. White cards on soft gray background.",
+      "table": "Minimalist rows, no vertical borders, soft hover states."
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_main": {
+        "url": "https://images.unsplash.com/photo-1767552670030-a276419d6d34?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Elegant lavender dianthus bouquet in amber vase",
+        "category": "hero"
+      },
+      "hero_bg_texture": {
+        "url": "https://images.unsplash.com/photo-1638043008124-9268465173b7?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Pink marble texture",
+        "category": "background"
+      },
+      "armenian_accent_1": {
+        "url": "https://images.unsplash.com/photo-1608869857121-c0bcdf4fff2c?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Pomegranate on dark surface",
+        "category": "accent"
+      },
+      "armenian_accent_2": {
+        "url": "https://images.unsplash.com/photo-1593442205251-32e6fcee5ff5?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Pomegranate in basket",
+        "category": "accent"
+      },
+      "florist_working": {
+        "url": "https://images.unsplash.com/photo-1753982861953-9d83250dc213?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Florist arranging flowers",
+        "category": "about"
+      },
+      "product_placeholders": [
+        "https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&q=80"
+      ]
+    },
+    "icons": "Lucide React (Stroke width: 1.5px for elegance)"
+  },
+  "instructions_to_main_agent": {
+    "general": [
+      "Use 'Noto Serif Armenian' for all Headings. If not available, import it from Google Fonts.",
+      "Ensure all text is in Armenian (use Google Translate or mock Armenian text if needed, but preferably use placeholders like 'Ծաղիկներ', 'Մեր մասին', 'Կապ').",
+      "Do not use generic 'Lorem Ipsum'. Use Armenian mock text.",
+      "Implement a 'CartContext' for state management.",
+      "Use 'framer-motion' for page transitions and hover effects."
+    ],
+    "admin_panel": [
+      "Route: /admin",
+      "Protect with a simple mock login (password: 'admin123').",
+      "Use a different layout wrapper for Admin (Sidebar + Topbar).",
+      "Allow Image Upload (mock by accepting file and showing preview)."
+    ],
+    "mock_data": [
+      "Create a 'flowers.json' or constant file with at least 8-10 diverse flower products.",
+      "Include fields: id, name (Armenian), price, category, color, image, description."
+    ]
+  },
+  "universal_guidelines": [
+    "Avoid 'AI Slop' - no generic centered layouts.",
+    "Use 2-3x more spacing than typical.",
+    "Interactive elements must have 'data-testid'.",
+    "No gradients for text colors.",
+    "Use 'sonner' for toasts."
+  ]
+}

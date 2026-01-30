@@ -1,0 +1,11 @@
+Django==4.2.11
+djangorestframework==3.16.1
+psycopg2-binary==2.9.11
+django-cors-headers==4.9.0
+cloudinary==1.44.1
+djangorestframework-simplejwt==5.5.1
+python-dotenv==1.2.1
+Pillow==11.3.0
+django-filter==25.1
+gunicorn==23.0.0
+stripe==14.3.0a1
