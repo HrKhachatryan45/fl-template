@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block title %}Գլխավոր - Ծաղիկ{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-[85vh] flex items-center bg-gradient-to-b from-[#FFFCF8] via-[#FFF0F5] to-[#FFFCF8]" data-testid="hero-section">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="animate-fade-in">
+                <div class="mb-6">
+                    <span class="inline-block bg-accent/30 text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-6">
+                        {{ main_content.title }}
+                    </span>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-serif font-bold text-foreground mb-6 leading-tight tracking-tight">
+                    {{ main_content.subtitle }}
+                </h1>
+
+                <p class="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
+                    {{ main_content.description }}
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'products' %}" class="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-4 font-medium transition-all shadow-lg hover:shadow-primary/20 inline-flex items-center justify-center gap-2" data-testid="hero-shop-button">
+                        <span>Գնել հիմա</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+
+                    <a href="{% url 'contact' %}" class="bg-white text-primary border border-primary/20 hover:bg-primary/5 rounded-full px-8 py-4 font-medium transition-all inline-flex items-center justify-center" data-testid="hero-contact-button">
+                        Կապ մեզ հետ
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative animate-fade-in">
+                <div class="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.1)]">
+                    <img src="{{ main_content.main_image }}" alt="Գեղեցիկ ծաղիկներ" class="w-full h-[600px] object-cover" data-testid="hero-image">
+                </div>
+
+                <div class="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20 animate-float">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-primary/10 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-bold text-2xl text-foreground">500+</div>
+                            <div class="text-sm text-muted-foreground">Գոհ հաճախորդներ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Special Offer Section -->
+{% if main_content.special_offer %}
+<section class="py-16 md:py-24 bg-gradient-to-b from-secondary/5 to-transparent text-center">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="bg-primary text-primary-foreground rounded-3xl p-12 md:p-16 relative overflow-hidden inline-block animate-fade-in">
+            <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6">
+                {{ main_content.special_offer }}
+            </h2>
+            {% if main_content.extra_text %}
+            <p class="text-lg mb-8 opacity-90 max-w-2xl mx-auto">{{ main_content.extra_text }}</p>
+            {% endif %}
+            <a href="{% url 'products' %}" class="inline-flex items-center gap-2 bg-white text-primary hover:bg-white/90 rounded-full px-8 py-4 font-medium transition-all shadow-lg">
+                <span>Սկսել գնումները</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Flowers Section -->
+<section class="py-16 md:py-24" data-testid="featured-products-section">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="text-center mb-12 animate-fade-in">
+            <h2 class="text-4xl md:text-5xl font-serif font-semibold mb-4">
+                Առաջարկվող ծաղիկներ
+            </h2>
+            <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Մեր լավագույն և ամենաշատ սիրված ծաղկային կոմպոզիցիաները
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for flower in featured_flowers %}
+            <div class="animate-fade-in">
+                {% include 'product_card.html' with product=flower %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="{% url 'products' %}" class="inline-flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-4 font-medium transition-all shadow-lg hover:shadow-primary/20">
+                <span>Դիտել բոլորը</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 md:py-24 bg-white" data-testid="features-section">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-secondary/10 p-8 rounded-2xl border border-secondary/20 text-center animate-fade-in">
+                <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-2">Ձեռքով ընտրված</h3>
+                <p class="text-muted-foreground">
+                    Յուրաքանչյուր ծաղիկ ուշադիր ընտրված է առավելագույն թարմությունը ապահովելու համար
+                </p>
+            </div>
+
+            <div class="bg-secondary/10 p-8 rounded-2xl border border-secondary/20 text-center animate-fade-in">
+                <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                    </svg>
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-2">Արագ առաքում</h3>
+                <p class="text-muted-foreground">
+                    Երևան քաղաքում անվճար առաքում նույն օրը
+                </p>
+            </div>
+
+            <div class="bg-secondary/10 p-8 rounded-2xl border border-secondary/20 text-center animate-fade-in">
+                <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-2">Բացառիկ որակ</h3>
+                <p class="text-muted-foreground">
+                    Միայն բարձրորակ և թարմ ծաղիկներ մեր հաճախորդներին
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+<a href="{% url 'product_detail' product.id %}" class="group block">
+    <div class="rounded-2xl overflow-hidden border border-border/50 hover:border-primary/20 transition-all shadow-sm hover:shadow-lg bg-white">
+        <div class="aspect-square overflow-hidden bg-muted relative">
+            {% if product.images.all %}
+                {% for image in product.images.all %}
+                    {% if image.is_main %}
+                        <img src="{{ image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&q=80" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+            {% endif %}
+            
+            {% if product.is_free_delivery %}
+            <div class="absolute top-3 right-3 bg-accent/90 backdrop-blur-sm text-accent-foreground px-3 py-1 rounded-full text-xs font-medium">
+                Անվճար առաքում
+            </div>
+            {% endif %}
+            
+            {% if product.sale_price_amd %}
+            <div class="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
+                SALE
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="p-5">
+            <h3 class="font-serif text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-1">
+                {{ product.name }}
+            </h3>
+            
+            <p class="text-sm text-muted-foreground mb-3 line-clamp-2">
+                {{ product.description|truncatewords:15 }}
+            </p>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    {% if product.sale_price_amd %}
+                    <span class="text-xl font-bold text-primary">
+                        {{ product.sale_price_amd|floatformat:0 }} փ
+                    </span>
+                    <span class="text-sm text-muted-foreground line-through ml-2">
+                        {{ product.price_amd|floatformat:0 }} փ
+                    </span>
+                    {% else %}
+                    <span class="text-2xl font-bold text-primary">
+                        {{ product.price_amd|floatformat:0 }} փ
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <span class="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
+                    {{ product.category }}
+                </span>
+            </div>
+        </div>
+    </div>
+</a>

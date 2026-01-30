@@ -1,0 +1,76 @@
+<nav class="bg-white border-b border-border sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="flex items-center gap-3 group">
+                <div class="bg-primary rounded-full p-2 group-hover:scale-110 transition-transform">
+                    <svg class="w-8 h-8 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <span class="text-2xl font-serif font-bold text-primary">Ծաղիկ</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="{% url 'home' %}" class="text-foreground hover:text-primary transition-colors font-medium">Գլխավոր</a>
+                <a href="{% url 'products' %}" class="text-foreground hover:text-primary transition-colors font-medium">Ծաղիկներ</a>
+                <a href="{% url 'contact' %}" class="text-foreground hover:text-primary transition-colors font-medium">Կապ</a>
+            </div>
+            
+            <!-- Cart & Admin -->
+            <div class="flex items-center gap-4">
+                <a href="{% url 'cart' %}" class="relative p-2 hover:bg-muted rounded-full transition-colors" data-testid="cart-icon">
+                    <svg class="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    {% if cart_count > 0 %}
+                    <span class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" data-testid="cart-count">
+                        {{ cart_count }}
+                    </span>
+                    {% endif %}
+                </a>
+                
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="hidden md:flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-4 py-2 font-medium transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Ադմին
+                </a>
+                {% else %}
+                <a href="{% url 'admin_login' %}" class="hidden md:block text-muted-foreground hover:text-primary transition-colors text-sm">Ադմին մուտք</a>
+                {% endif %}
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-muted rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4">
+            <div class="flex flex-col gap-2">
+                <a href="{% url 'home' %}" class="px-4 py-2 hover:bg-muted rounded-lg transition-colors">Գլխավոր</a>
+                <a href="{% url 'products' %}" class="px-4 py-2 hover:bg-muted rounded-lg transition-colors">Ծաղիկներ</a>
+                <a href="{% url 'contact' %}" class="px-4 py-2 hover:bg-muted rounded-lg transition-colors">Կապ</a>
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg">Ադմին պանել</a>
+                {% else %}
+                <a href="{% url 'admin_login' %}" class="px-4 py-2 hover:bg-muted rounded-lg transition-colors">Ադմին մուտք</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
+</script>

@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - Ծաղիկ{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12">
+    <div class="container mx-auto px-4 md:px-8">
+        <a href="{% url 'products' %}" class="flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 transition-colors animate-fade-in" data-testid="back-button">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span>Վերադառնալ</span>
+        </a>
+
+        <div class="grid md:grid-cols-2 gap-12">
+            <!-- Images -->
+            <div class="animate-fade-in">
+                <div class="sticky top-24">
+                    <div class="rounded-3xl overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.1)] mb-6">
+                        <img id="main-image" src="{% for img in product.images.all %}{% if img.is_main %}{{ img.url }}{% endif %}{% endfor %}" alt="{{ product.name }}" class="w-full aspect-square object-cover" data-testid="product-detail-image">
+                    </div>
+
+                    {% if product.images.all|length > 1 %}
+                    <div class="grid grid-cols-4 gap-2 mb-6">
+                        {% for image in product.images.all %}
+                        <button onclick="document.getElementById('main-image').src='{{ image.url }}'" class="aspect-square rounded-lg overflow-hidden border-2 border-border hover:border-primary/50 transition-all">
+                            <img src="{{ image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                        </button>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="flex gap-4">
+                        <button onclick="toggleFavorite()" id="favorite-btn" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-border hover:bg-muted transition-all" data-testid="favorite-button">
+                            <svg id="heart-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <span>Սիրված</span>
+                        </button>
+                        
+                        <button onclick="shareProduct()" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-border hover:bg-muted transition-all" data-testid="share-button">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                            </svg>
+                            <span>Կիսվել</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="animate-fade-in">
+                <div class="mb-4">
+                    <span class="inline-block bg-accent/30 text-accent-foreground px-4 py-1 rounded-full text-sm font-medium">
+                        {{ product.category }}
+                    </span>
+                </div>
+
+                <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4" data-testid="product-detail-name">
+                    {{ product.name }}
+                </h1>
+
+                <div class="mb-6">
+                    {% if product.sale_price_amd %}
+                    <span class="text-5xl font-bold text-primary" data-testid="product-detail-price">
+                        {{ product.sale_price_amd|floatformat:0 }} փ
+                    </span>
+                    <span class="text-2xl font-bold text-muted-foreground line-through ml-3">
+                        {{ product.price_amd|floatformat:0 }} փ
+                    </span>
+                    {% else %}
+                    <span class="text-5xl font-bold text-primary" data-testid="product-detail-price">
+                        {{ product.price_amd|floatformat:0 }} փ
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="mb-8">
+                    {% if product.is_free_delivery %}
+                    <div class="flex items-center gap-2 text-sm mb-2">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-muted-foreground">Անվճար առաքում</span>
+                    </div>
+                    {% endif %}
+                    {% if product.colors %}
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-muted-foreground font-medium">Գույներ:</span>
+                        <span class="text-muted-foreground">{{ product.colors|join:", " }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="prose prose-lg mb-8">
+                    <h3 class="font-serif text-xl font-semibold mb-3">Նկարագրություն</h3>
+                    <p class="text-muted-foreground leading-relaxed" data-testid="product-detail-description">
+                        {{ product.description }}
+                    </p>
+                </div>
+
+                <div class="bg-secondary/10 rounded-2xl p-6 mb-8">
+                    <h3 class="font-serif text-lg font-semibold mb-4">Մանրամասներ</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Կատեգորիա</span>
+                            <span class="font-medium">{{ product.category }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Առկայություն</span>
+                            <span class="font-medium text-green-600">Առկա</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="POST" action="{% url 'add_to_cart' product.id %}" class="space-y-4">
+                    {% csrf_token %}
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Քանակ</label>
+                        <div class="flex items-center gap-4">
+                            <button type="button" onclick="decreaseQty()" class="w-12 h-12 rounded-lg border border-border hover:bg-muted transition-colors font-bold" data-testid="quantity-decrease">
+                                -
+                            </button>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1" class="text-2xl font-bold w-16 text-center border-0 focus:outline-none" data-testid="quantity-value" readonly>
+                            <button type="button" onclick="increaseQty()" class="w-12 h-12 rounded-lg border border-border hover:bg-muted transition-colors font-bold" data-testid="quantity-increase">
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <button type="submit" class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-4 font-medium transition-all shadow-lg hover:shadow-primary/20 flex items-center justify-center gap-3 text-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span>Ավելացնել զամբյուղ</span>
+                        </button>
+
+                        <a href="{% url 'checkout' %}?buy_now={{ product.id }}&quantity=1" id="buy-now-link" class="block w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground rounded-full px-8 py-4 font-medium transition-all shadow-md text-center text-lg">
+                            Գնել հիմա
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function decreaseQty() {
+    const input = document.getElementById('quantity');
+    const currentValue = parseInt(input.value);
+    if (currentValue > 1) {
+        input.value = currentValue - 1;
+        updateBuyNowLink();
+    }
+}
+
+function increaseQty() {
+    const input = document.getElementById('quantity');
+    input.value = parseInt(input.value) + 1;
+    updateBuyNowLink();
+}
+
+function updateBuyNowLink() {
+    const quantity = document.getElementById('quantity').value;
+    const link = document.getElementById('buy-now-link');
+    const productId = '{{ product.id }}';
+    link.href = `/checkout?buy_now=${productId}&quantity=${quantity}`;
+}
+
+let isFavorite = false;
+function toggleFavorite() {
+    isFavorite = !isFavorite;
+    const btn = document.getElementById('favorite-btn');
+    const icon = document.getElementById('heart-icon');
+    
+    if (isFavorite) {
+        btn.classList.add('bg-primary/10', 'border-primary', 'text-primary');
+        icon.setAttribute('fill', 'currentColor');
+    } else {
+        btn.classList.remove('bg-primary/10', 'border-primary', 'text-primary');
+        icon.setAttribute('fill', 'none');
+    }
+}
+
+async function shareProduct() {
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: '{{ product.name }}',
+                text: 'Տես այս ապրանքը',
+                url: window.location.href
+            });
+        } catch (err) {
+            console.log('Share cancelled');
+        }
+    } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Հղումը պատճենվեց');
+    }
+}
+</script>
+{% endblock %}

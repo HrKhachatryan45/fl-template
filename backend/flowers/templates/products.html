@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Ծաղիկներ - Ծաղիկ{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="mb-12 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4 text-center">
+                Մեր ծաղիկները
+            </h1>
+            <p class="text-lg text-muted-foreground text-center max-w-2xl mx-auto">
+                Ուսումնասիրեք մեր գեղեցիկ ծաղիկների հավաքածուն
+            </p>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="mb-8 flex flex-col md:flex-row gap-4">
+            <form method="GET" class="flex-1 flex gap-4">
+                <div class="flex-1 relative">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" name="search" value="{{ search_query }}" placeholder="Որոնել ծաղիկներ..." class="w-full pl-12 pr-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/20">
+                </div>
+                <button type="submit" class="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-all">
+                    Որոնել
+                </button>
+            </form>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Filters Sidebar -->
+            <aside class="lg:w-64 space-y-6">
+                <form method="GET" id="filter-form">
+                    {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    {% endif %}
+                    
+                    <div class="bg-white rounded-xl p-4 border">
+                        <h3 class="font-semibold mb-3">Կատեգորիա</h3>
+                        {% for cat_id, cat_name in categories %}
+                        <label class="block px-3 py-2 rounded hover:bg-muted cursor-pointer {% if category == cat_id %}bg-primary text-white{% endif %}">
+                            <input type="radio" name="category" value="{{ cat_id }}" {% if category == cat_id %}checked{% endif %} onchange="this.form.submit()" class="mr-2">
+                            {{ cat_name }}
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 border">
+                        <h3 class="font-semibold mb-3">Գույն</h3>
+                        {% for color_id, color_name in colors %}
+                        <label class="block px-3 py-2 rounded hover:bg-muted cursor-pointer {% if color == color_id %}bg-primary text-white{% endif %}">
+                            <input type="radio" name="color" value="{{ color_id }}" {% if color == color_id %}checked{% endif %} onchange="this.form.submit()" class="mr-2">
+                            {{ color_name }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if category or color or search_query %}
+                    <a href="{% url 'products' %}" class="block w-full text-center px-4 py-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors">
+                        Մաքրել ֆիլտրերը
+                    </a>
+                    {% endif %}
+                </form>
+            </aside>
+
+            <!-- Products Grid -->
+            <div class="flex-1">
+                <div class="mb-4 text-muted-foreground">
+                    Գտնվել է {{ flowers.paginator.count }} արդյունք
+                </div>
+
+                {% if flowers %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                    {% for flower in flowers %}
+                    <div class="animate-fade-in">
+                        {% include 'product_card.html' with product=flower %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if flowers.has_other_pages %}
+                <div class="flex justify-center items-center gap-2">
+                    {% if flowers.has_previous %}
+                    <a href="?page={{ flowers.previous_page_number }}{% if category %}&category={{ category }}{% endif %}{% if color %}&color={{ color }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="px-3 py-2 border rounded hover:bg-muted transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    {% else %}
+                    <span class="px-3 py-2 border rounded opacity-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </span>
+                    {% endif %}
+
+                    {% for num in flowers.paginator.page_range %}
+                        {% if flowers.number == num %}
+                        <span class="px-4 py-2 bg-primary text-white rounded">{{ num }}</span>
+                        {% elif num > flowers.number|add:'-3' and num < flowers.number|add:'3' %}
+                        <a href="?page={{ num }}{% if category %}&category={{ category }}{% endif %}{% if color %}&color={{ color }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="px-4 py-2 border rounded hover:bg-muted transition-colors">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if flowers.has_next %}
+                    <a href="?page={{ flowers.next_page_number }}{% if category %}&category={{ category }}{% endif %}{% if color %}&color={{ color }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="px-3 py-2 border rounded hover:bg-muted transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                    {% else %}
+                    <span class="px-3 py-2 border rounded opacity-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="py-16 text-center text-muted-foreground">
+                    Ոչինչ չգտնվեց
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

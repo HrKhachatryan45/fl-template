@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Զամբյուղ - Ծաղիկ{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12">
+    <div class="container mx-auto px-4 md:px-8">
+        {% if cart_items %}
+        <div class="mb-12 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold mb-2">
+                Զամբյուղ
+            </h1>
+            <p class="text-muted-foreground">
+                {{ cart_items|length }} {% if cart_items|length == 1 %}ապրանք{% else %}ապրանքներ{% endif %}
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-4" data-testid="cart-items">
+                {% for item in cart_items %}
+                <div class="bg-white rounded-2xl p-6 border border-border/50 shadow-sm animate-fade-in" data-testid="cart-item-{{ item.id }}">
+                    <div class="flex gap-6">
+                        <a href="{% url 'product_detail' item.id %}" class="w-32 h-32 rounded-xl overflow-hidden bg-muted flex-shrink-0">
+                            <img src="{{ item.image }}" alt="{{ item.name }}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300" data-testid="cart-item-image-{{ item.id }}">
+                        </a>
+
+                        <div class="flex-1">
+                            <div class="flex justify-between mb-2">
+                                <a href="{% url 'product_detail' item.id %}" class="font-serif text-xl font-semibold hover:text-primary transition-colors" data-testid="cart-item-name-{{ item.id }}">
+                                    {{ item.name }}
+                                </a>
+                                <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-muted-foreground hover:text-destructive transition-colors" data-testid="cart-remove-{{ item.id }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <p class="text-sm text-muted-foreground mb-4">
+                                {{ item.category }}
+                            </p>
+
+                            <div class="flex items-center justify-between">
+                                <form method="POST" action="{% url 'update_cart' item.id %}" class="flex items-center gap-3">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="decrease" class="w-8 h-8 rounded-lg border border-border hover:bg-muted transition-colors" data-testid="cart-decrease-{{ item.id }}">
+                                        <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                        </svg>
+                                    </button>
+                                    <span class="text-lg font-semibold w-8 text-center" data-testid="cart-quantity-{{ item.id }}">
+                                        {{ item.quantity }}
+                                    </span>
+                                    <button type="submit" name="action" value="increase" class="w-8 h-8 rounded-lg border border-border hover:bg-muted transition-colors" data-testid="cart-increase-{{ item.id }}">
+                                        <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-primary" data-testid="cart-item-total-{{ item.id }}">
+                                        {% if item.sale_price %}
+                                        <span class="line-through text-muted-foreground text-lg">{{ item.subtotal|floatformat:0 }} ֏</span><br>
+                                        {{ item.sale_subtotal|floatformat:0 }} ֏
+                                        {% else %}
+                                        {{ item.subtotal|floatformat:0 }} ֏
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        {{ item.price|floatformat:0 }} ֏ / հատ
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="lg:col-span-1 animate-fade-in">
+                <div class="bg-white rounded-2xl p-6 border border-border/50 shadow-sm sticky top-24">
+                    <h2 class="font-serif text-2xl font-bold mb-6">
+                        Ամփոփում
+                    </h2>
+
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between text-lg">
+                            <span class="text-muted-foreground">Ենթագումար</span>
+                            <span class="font-semibold">{{ cart_total|floatformat:0 }} ֏</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span class="text-muted-foreground">Առաքում</span>
+                            <span class="font-semibold text-green-600">Անվճար</span>
+                        </div>
+                        <div class="border-t border-border pt-4">
+                            <div class="flex justify-between text-2xl font-bold">
+                                <span>Ընդամենը</span>
+                                <span class="text-primary" data-testid="cart-total">
+                                    {{ cart_total|floatformat:0 }} ֏
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'checkout' %}" class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-4 font-medium transition-all shadow-lg hover:shadow-primary/20 flex items-center justify-center gap-2 mb-4" data-testid="proceed-to-checkout">
+                        <span>Շարունակել պատվերը</span>
+                    </a>
+
+                    <form method="POST" action="{% url 'clear_cart' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-destructive hover:bg-destructive/10 rounded-full px-8 py-3 font-medium transition-all" data-testid="clear-cart-button">
+                            Մաքրել զամբյուղը
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="min-h-screen flex items-center justify-center">
+            <div class="text-center animate-fade-in" data-testid="empty-cart">
+                <svg class="w-24 h-24 text-muted-foreground mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                </svg>
+                <h2 class="text-3xl font-serif font-bold mb-4">
+                    Ձեր զամբյուղը դատարկ է
+                </h2>
+                <p class="text-muted-foreground mb-8">
+                    Ավելացրեք գեղեցիկ ծաղիկներ ձեր զամբյուղին
+                </p>
+                <a href="{% url 'products' %}" class="inline-flex bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-4 font-medium transition-all shadow-lg" data-testid="empty-cart-shop-button">
+                    Սկսել գնումները
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
